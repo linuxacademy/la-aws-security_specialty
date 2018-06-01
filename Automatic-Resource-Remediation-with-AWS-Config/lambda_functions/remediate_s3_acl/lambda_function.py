@@ -17,10 +17,6 @@ SNS_CLIENT = boto3.client('sns')
 SNS_TOPIC = "arn:aws:sns:us-east-1:%s:config-rules-compliance" % ACCOUNT_ID
 SNS_SUBJECT = 'Compliance Update'
 
-# AWS S3 Settings
-S3_CLIENT = boto3.client('s3')
-ALL_USERS_GROUP = 'http://acs.amazonaws.com/groups/global/AllUsers'
-
 
 def lambda_handler(event, context):
     """Entry point"""
