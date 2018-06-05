@@ -7,6 +7,7 @@ apply remediation by replacing the 0.0.0.0/0 22/tcp inbound rule with
 import boto3
 
 # AWS Config settings
+ACCOUNT_ID = boto3.client('sts').get_caller_identity()['Account']
 CONFIG_CLIENT = boto3.client('config')
 MY_RULE = "restricted-ssh"
 
@@ -15,7 +16,7 @@ EC2_CLIENT = boto3.client('ec2')
 
 # AWS SNS Settings
 SNS_CLIENT = boto3.client('sns')
-SNS_TOPIC = 'mytopic'
+SNS_TOPIC = 'arn:aws:sns:us-east-1:' + ACCOUNT_ID + ':' + 'mytopic'
 SNS_SUBJECT = 'Compliance Update'
 
 
