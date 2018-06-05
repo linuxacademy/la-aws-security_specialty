@@ -1,20 +1,18 @@
 """
-Lambda function to poll Config for noncompliant resources, and automatically 
-apply remediation by removing S3 bucket ACLs which allow public read. 
+Lambda function to poll Config for noncompliant resources, and automatically
+apply remediation by removing S3 bucket ACLs which allow public read.
 Notifications are sent to an SNS topic.
 """
 
 import boto3
-from pprint import pprint
 
 # AWS Config settings
-ACCOUNT_ID = boto3.client('sts').get_caller_identity()['Account']
 CONFIG_CLIENT = boto3.client('config')
 MY_RULE = "s3-bucket-public-read-prohibited"
 
 # AWS SNS Settings
 SNS_CLIENT = boto3.client('sns')
-SNS_TOPIC = "arn:aws:sns:us-east-1:%s:config-rules-compliance" % ACCOUNT_ID
+SNS_TOPIC = 'mytopic'
 SNS_SUBJECT = 'Compliance Update'
 
 
@@ -54,8 +52,7 @@ def lambda_handler(event, context):
             s3 = boto3.resource('s3')
             bucket = s3.Bucket(bucket_name)
             acl = bucket.Acl()
-            response = acl.put(ACL='private')
-            pprint(response)
+            acl.put(ACL='private')
 
     else:
         print('No noncompliant resources detected.')

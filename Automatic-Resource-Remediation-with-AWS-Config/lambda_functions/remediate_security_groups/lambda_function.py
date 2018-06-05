@@ -1,14 +1,12 @@
 """
-Lambda function to poll Config for noncompliant resources, and automatically 
-apply remediation by replacing the 0.0.0.0/0 22/tcp inbound rule with 
+Lambda function to poll Config for noncompliant resources, and automatically
+apply remediation by replacing the 0.0.0.0/0 22/tcp inbound rule with
 10.10.0.0/16 22/tcp. Notifications are sent to an SNS topic.
 """
 
 import boto3
-from pprint import pprint
 
 # AWS Config settings
-ACCOUNT_ID = boto3.client('sts').get_caller_identity()['Account']
 CONFIG_CLIENT = boto3.client('config')
 MY_RULE = "restricted-ssh"
 
@@ -17,7 +15,7 @@ EC2_CLIENT = boto3.client('ec2')
 
 # AWS SNS Settings
 SNS_CLIENT = boto3.client('sns')
-SNS_TOPIC = "arn:aws:sns:us-east-1:%s:config-rules-compliance" % ACCOUNT_ID
+SNS_TOPIC = 'mytopic'
 SNS_SUBJECT = 'Compliance Update'
 
 
@@ -29,11 +27,9 @@ def lambda_handler(event, context):
         ConfigRuleName=MY_RULE, ComplianceTypes=['NON_COMPLIANT'])
 
     if len(non_compliant_detail['EvaluationResults']) > 0:
-
-        pprint(non_compliant_detail['EvaluationResults'])
-
         print(
-            'The following resource(s) are not compliant with AWS Config rule: ' + MY_RULE)
+            'The following resource(s) are not compliant with AWS Config rule: '
+            + MY_RULE)
         non_complaint_resources = ''
         for result in non_compliant_detail['EvaluationResults']:
             print(result['EvaluationResultIdentifier']
@@ -61,16 +57,33 @@ def lambda_handler(event, context):
     else:
         print('No noncompliant resources detected.')
 
-def sg_add_ingress(pub_ip, sg):
-    """Add ingress rule for SSH TCP/22 to the designated SG"""
-    response = EC2_CLIENT.authorize_security_group_ingress(
-        GroupId=sg,
-        IpProtocol='tcp',
-        FromPort=22,
-        ToPort=22,
-        CidrIp=pub_ip
+
+def get_sec_group(sg_id):
+    """Return the Security Group given a Security Group ID"""
+    sec_group = EC2_CLIENT.describe_security_groups(Filters=[{'Name': 'group-id', 'Values': [sg_id]}])
+    return sec_group
+
+
+def remediate_sg(ip, sg, vpc):
+    """Return EC2 SG object based on filters defined by provided VPCID/SGID"""
+    sgrules = EC2_CLIENT.describe_security_groups(Filters=[
+        {
+            'Name': 'vpc-id',
+            'Values': [vpc]
+        },
+        {
+            'Name': 'group-id',
+            'Values': [sg]
+        }
+    ]
     )
-    return response
+    r = remove_old_rule(sgrules, sg, ip)
+    if r is True:
+        sg_add_ingress(ip, sg)
+        return True
+    elif r is False:
+        return False
+
 
 def remove_old_rule(r, sg, ip):
     """Remove any existing rules in the SG provided the current CIDR doesn't match"""
@@ -88,28 +101,14 @@ def remove_old_rule(r, sg, ip):
         print('No security group rules for ' + sg)
         return True
 
-def get_sec_group(sg_id):
-    """Return the Security Group given a Security Group ID"""
-    sec_group = EC2_CLIENT.describe_security_groups(Filters=[{'Name': 'group-id', 'Values': [sg_id]}])
-    return sec_group
 
-def remediate_sg(ip, sg, vpc):
-    """Return EC2 SG object based on filters defined by provided VPCID/SGID"""
-    sgrules = EC2_CLIENT.describe_security_groups(Filters=
-    [
-        {
-            'Name': 'vpc-id',
-            'Values': [vpc]
-        },
-        {
-            'Name': 'group-id',
-            'Values': [sg]
-        }
-    ]
+def sg_add_ingress(pub_ip, sg):
+    """Add ingress rule for SSH TCP/22 to the designated SG"""
+    response = EC2_CLIENT.authorize_security_group_ingress(
+        GroupId=sg,
+        IpProtocol='tcp',
+        FromPort=22,
+        ToPort=22,
+        CidrIp=pub_ip
     )
-    r = remove_old_rule(sgrules, sg, ip)
-    if r is True:
-        sg_add_ingress(ip, sg)
-        return True
-    elif r is False:
-        return False
+    return response
