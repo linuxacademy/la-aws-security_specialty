@@ -9,15 +9,18 @@ def lambda_handler(event, context):
     '''
 
     try:
-        json_message = event['Message']
-        message = json.loads(json_message)
-        instance = message['AlarmDescription'].split()[-1]
+        print(event)
+        sns = event['Records'][0]['Sns']
+        print('DEBUG:', sns['Message'])
+        json_msg = json.loads(sns['Message'])
+        instance = json_msg['AlarmDescription'].split()[-1]
 
         print("Instance: " + instance)
 
         ec2 = boto3.client('ec2')
         ec2.stop_instances(InstanceIds=[instance])
 
-        print('Stopped instance: ' + instance)
+        print('Stopped instance: %s' % instance)
+
     except Exception as e:
-        print('Error: ' + e)
+        print('Error - reason "%s"' % str(e))
