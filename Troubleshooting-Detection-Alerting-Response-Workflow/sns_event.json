@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:us-east-1:488577072517:cfst-716-ac22d3f1c22bd4cb8c2a626d6879e183-AlarmNotificationTopic-6KV5VLUBDIM6:107d9d31-eb80-4ac2-938b-bac7db6baf51",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "bf6c6401-5f5f-5575-a1e2-379ddcdcd2e4",
+                "TopicArn": "arn:aws:sns:us-east-1:488577072517:cfst-716-ac22d3f1c22bd4cb8c2a626d6879e183-AlarmNotificationTopic-6KV5VLUBDIM6",
+                "Subject": "ALARM: \"cfst-716-ac22d3f1c22bd4cb8c2a626d6879e183-InvalidSSHLoginAlarm-...\" in US East (N. Virginia)",
+                "Message": "{\"AlarmName\":\"cfst-716-ac22d3f1c22bd4cb8c2a626d6879e183-InvalidSSHLoginAlarm-NNNFH7H1BW17\",\"AlarmDescription\":\"Invalid login attempts >2 in 1 min for instance i-00a9030a7a17691b0\",\"AWSAccountId\":\"488577072517\",\"NewStateValue\":\"ALARM\",\"NewStateReason\":\"Threshold Crossed: 1 out of the last 1 datapoints [3.0 (14/06/18 14:51:00)] was greater than the threshold (2.0) (minimum 1 datapoint for OK -> ALARM transition).\",\"StateChangeTime\":\"2018-06-14T14:52:51.039+0000\",\"Region\":\"US East (N. Virginia)\",\"OldStateValue\":\"INSUFFICIENT_DATA\",\"Trigger\":{\"MetricName\":\"InvalidSSHLogin\",\"Namespace\":\"SSH\",\"StatisticType\":\"Statistic\",\"Statistic\":\"SUM\",\"Unit\":null,\"Dimensions\":[],\"Period\":60,\"EvaluationPeriods\":1,\"ComparisonOperator\":\"GreaterThanThreshold\",\"Threshold\":2.0,\"TreatMissingData\":\"\",\"EvaluateLowSampleCountPercentile\":\"\"}}",
+                "Timestamp": "2018-06-14T14:52:51.059Z",
+                "SignatureVersion": "1",
+                "Signature": "dyzQQCYnA8vDjIisEf5+QpuIMHW4bahABiZYfoqQq1PmAu5RN9sOWUlO1D2iyEtjKjkXwtSIir0fbCu6qgjMI9BY5MngjiBhOFFXdc9qwwdckvcKvosD0gaPhgWpDMZ4SKohhQeCqgrmZG+4Llf23JMIMKhOWjGLp2318+ABAjEi3y4gVzep+vSByK9D5LnRby7igO3AwyvEEyGzhcdhO/da4xkJjQSN0qRrM8kIEYV+xg9pvwTbmV7vOWj/kn0uSMXLnPRsOx77+J8SsGd3GcM57Ykgv3+acIBSo63kv0aOTIP3PJEvOoq0mb3HsuFlbBnIExUGWVrhBMambDLoWA==",
+                "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-eaea6120e66ea12e88dcd8bcbddca752.pem",
+                "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:488577072517:cfst-716-ac22d3f1c22bd4cb8c2a626d6879e183-AlarmNotificationTopic-6KV5VLUBDIM6:107d9d31-eb80-4ac2-938b-bac7db6baf51",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}
