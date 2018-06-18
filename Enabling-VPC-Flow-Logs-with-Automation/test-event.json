@@ -12,7 +12,7 @@
       "userIdentity": {
         "type": "Root",
         "principalId": "111111111111",
-        "arn": "arn:aws:iam::629054125090:root",
+        "arn": "arn:aws:iam::111111111111:root",
         "accountId": "111111111111",
         "accessKeyId": "...",
         "sessionContext": {
